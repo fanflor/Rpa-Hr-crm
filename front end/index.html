@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR Employee Intake Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+
+  <div class="bg-white w-full max-w-2xl shadow-xl rounded-2xl p-8 space-y-6">
+    <h1 class="text-3xl font-bold text-center mb-6">HR New Employee Intake Form</h1>
+
+    <!-- Form -->
+    <form id="employeeForm" class="space-y-5">
+
+      <!-- Personal Details -->
+      <fieldset class="border rounded-xl p-4">
+        <legend class="font-semibold text-lg px-2">Personal Details</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <label class="block text-sm font-medium mb-1" for="name">Full Name</label>
+            <input id="name" name="name" required class="w-full border rounded-lg px-3 py-2" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1" for="age">Age</label>
+            <input id="age" name="age" type="number" required min="18" max="100" class="w-full border rounded-lg px-3 py-2" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1" for="dob">Date of Birth</label>
+            <input id="dob" name="dob" type="date" required class="w-full border rounded-lg px-3 py-2" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1" for="email">Email</label>
+            <input id="email" name="email" type="email" required class="w-full border rounded-lg px-3 py-2" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1" for="businessArea">Business Area</label>
+            <input id="businessArea" name="businessArea" required class="w-full border rounded-lg px-3 py-2" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Gender</label>
+            <div class="flex items-center gap-4 mt-1">
+              <label class="flex items-center gap-1">
+                <input type="radio" name="gender" value="Male" required />
+                Male
+              </label>
+              <label class="flex items-center gap-1">
+                <input type="radio" name="gender" value="Female" />
+                Female
+              </label>
+              <label class="flex items-center gap-1">
+                <input type="radio" name="gender" value="Other" />
+                Other
+              </label>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Employment Details -->
+      <fieldset class="border rounded-xl p-4">
+        <legend class="font-semibold text-lg px-2">Employment Details</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <label class="block text-sm font-medium mb-1" for="positionTitle">Position Title</label>
+            <input id="positionTitle" name="positionTitle" required class="w-full border rounded-lg px-3 py-2" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1" for="startDate">Start Date</label>
+            <input id="startDate" name="startDate" type="date" required class="w-full border rounded-lg px-3 py-2" />
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium mb-1" for="jobFunctions">Job Functions</label>
+            <textarea id="jobFunctions" name="jobFunctions" rows="3" required class="w-full border rounded-lg px-3 py-2"></textarea>
+          </div>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="w-full bg-blue-600 text-white font-semibold rounded-lg py-2 mt-2 hover:bg-blue-700 transition">
+        Submit
+      </button>
+    </form>
+
+    <!-- Last Added Display -->
+    <div id="lastAdded" class="hidden mt-6 p-4 bg-green-50 rounded-xl border border-green-200 text-center">
+      <p class="font-semibold">Last Added Employee:</p>
+      <p id="lastEmployeeText" class="mt-1 text-gray-700"></p>
+    </div>
+
+    <!-- Show All Button -->
+    <div class="text-center mt-4">
+      <button id="toggleAllBtn" class="border px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+        Show All Employees
+      </button>
+    </div>
+
+    <!-- Employee List -->
+    <div id="allEmployees" class="hidden mt-4 border-t pt-4">
+      <h2 class="text-lg font-semibold mb-2 text-center">All Added Employees</h2>
+      <ul id="employeeList" class="space-y-2"></ul>
+      <button id="clearAllBtn" class="w-full mt-3 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition">
+        Clear All
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('employeeForm')
+    const lastAdded = document.getElementById('lastAdded')
+    const lastEmployeeText = document.getElementById('lastEmployeeText')
+    const allEmployees = document.getElementById('allEmployees')
+    const employeeList = document.getElementById('employeeList')
+    const toggleAllBtn = document.getElementById('toggleAllBtn')
+    const clearAllBtn = document.getElementById('clearAllBtn')
+
+    let employees = JSON.parse(localStorage.getItem('employees')) || []
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+
+      const formData = new FormData(form)
+      const newEmployee = Object.fromEntries(formData.entries())
+
+      employees.push(newEmployee)
+      localStorage.setItem('employees', JSON.stringify(employees))
+
+      showLastAdded(newEmployee)
+      form.reset()
+    })
+
+    function showLastAdded(emp) {
+      lastEmployeeText.innerHTML = `
+        <strong>${emp.name}</strong> (Age: ${emp.age}, ${emp.gender})<br>
+        ${emp.positionTitle} — ${emp.businessArea}<br>
+        Start Date: ${emp.startDate}
+      `
+      lastAdded.classList.remove('hidden')
+    }
+
+    toggleAllBtn.addEventListener('click', () => {
+      const isHidden = allEmployees.classList.toggle('hidden')
+      toggleAllBtn.textContent = isHidden ? 'Show All Employees' : 'Hide All Employees'
+      if (!isHidden) renderEmployeeList()
+    })
+
+    function renderEmployeeList() {
+      employeeList.innerHTML = ''
+      employees.forEach((emp, index) => {
+        const li = document.createElement('li')
+        li.className = 'bg-gray-100 p-3 rounded-lg text-sm'
+        li.innerHTML = `
+          <span class='font-semibold'>${emp.name}</span> (${emp.gender}, ${emp.age}y)<br>
+          <span class='text-gray-600'>${emp.positionTitle} - ${emp.businessArea}</span><br>
+          Start: ${emp.startDate} | Email: ${emp.email}
+        `
+        employeeList.appendChild(li)
+      })
+    }
+
+    clearAllBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all employee records?')) {
+        employees = []
+        localStorage.removeItem('employees')
+        employeeList.innerHTML = ''
+        lastAdded.classList.add('hidden')
+        allEmployees.classList.add('hidden')
+        toggleAllBtn.textContent = 'Show All Employees'
+      }
+    })
+
+    if (employees.length > 0) {
+      showLastAdded(employees[employees.length - 1])
+    }
+  </script>
+</body>
+</html>
