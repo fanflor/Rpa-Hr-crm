@@ -1,0 +1,6 @@
+{
+  "Name": "Hr_crm",
+  "ProjectType": "Process",
+  "Description": "This project is an automated HR intake and management system that integrates a user-friendly HTML/JavaScript front-end with UiPath RPA workflows.",
+  "MainFile": "Main.xaml"
+}
