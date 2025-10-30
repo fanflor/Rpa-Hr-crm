@@ -4,7 +4,9 @@
   "description": "This project is an automated HR intake and management system that integrates a user-friendly HTML/JavaScript front-end with UiPath RPA workflows.",
   "main": "Main.xaml",
   "dependencies": {
+    "UiPath.Credentials.Activities": "[3.0.0]",
     "UiPath.Excel.Activities": "[3.3.0-preview]",
+    "UiPath.MicrosoftOffice365.Activities": "[3.5.0-preview]",
     "UiPath.System.Activities": "[25.10.2]",
     "UiPath.UIAutomation.Activities": "[25.10.16]"
   },
